@@ -2,16 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-test_fitsioyielder
+test_fitsiochunked
 ----------------------------------
 
-Tests for `fitsioyielder` module.
+Tests for `fitsiochunked` module.
 """
 
 import pytest
 import fitsio
 import numpy as np
-from fitsioyielder import fitsioyielder
+import fitsiochunked
 
 @pytest.fixture(scope='session')
 def filename():
@@ -37,7 +37,7 @@ def hdulist(filename, tmpdir, data, hduname):
 @pytest.fixture
 def chunker(hdulist, hduname):
     hdu = hdulist[hduname]
-    return fitsioyielder.ChunkedAdapter(hdu)
+    return fitsiochunked.ChunkedAdapter(hdu)
 
 
 def test_number_of_rows(chunker, data):
@@ -128,7 +128,7 @@ Expected API
 
 with fitsio.FITS(filename) as infile:
     hdu = infile['flux']
-    chunker = fitsioyielder.ChunkedAdapter(hdu)
+    chunker = fitsiochunked.ChunkedAdapter(hdu)
     for chunk in chunker(chunksize=10): # or chunker(memory_limit=2048)
         # do something with chunk
 '''
