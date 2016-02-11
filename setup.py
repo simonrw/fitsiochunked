@@ -15,13 +15,12 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    'numpy',
-    'dask',
     'fitsio',
 ]
 
 test_requirements = [
-    'pytest'
+    'pytest',
+    'numpy',
 ]
 
 setup(
