@@ -108,6 +108,9 @@ def test_error_with_no_chunksize_or_memory_limit(chunker):
         _ = list(chunker())
     assert 'supply either chunksize or memory_limit' in str(err)
 
+def test_no_error_with_either_argument(chunker):
+    assert list(chunker(memory_limit_mb=1024))
+    assert list(chunker(chunksize=10))
 
 @pytest.mark.parametrize('memory_limit_mb, expected', [
     (2, 524288),

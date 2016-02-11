@@ -26,7 +26,7 @@ class ChunkedAdapter(object):
         return self._byte_size(self.data_type) * self.num_images
 
     def __call__(self, chunksize=None, memory_limit_mb=None):
-        if chunksize is None:
+        if chunksize is None and memory_limit_mb is None:
             raise ValueError('You must supply either chunksize or memory_limit_mb arguments')
 
         start = 0
