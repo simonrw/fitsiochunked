@@ -1,22 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from contextlib import contextmanager
 import numpy as np
 
-@contextmanager
-def open(filename):
-    yield Yielder()
 
-class Yielder(object):
-    def __init__(self):
-        self.fitsio = None
+class ChunkedAdapter(object):
+    def __init__(self, hdu):
+        pass
 
-    def __getitem__(self, key):
-        return HDU()
-
-class HDU(object):
-    def __init__(self):
-        self.hdu = None
-
-    def chunks(self, chunksize):
-        yield np.zeros((chunksize, 1))
+    def __call__(self, chunksize):
+        yield np.zeros((10, 1))

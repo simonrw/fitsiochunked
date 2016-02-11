@@ -9,43 +9,49 @@ Tests for `fitsioyielder` module.
 """
 
 import pytest
+import fitsio
+import numpy as np
 from fitsioyielder import fitsioyielder
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def filename():
     return 'test.fits'
 
-def test_open(filename):
-    with fitsioyielder.open(filename) as infile:
-        assert isinstance(infile, fitsioyielder.Yielder)
+@pytest.fixture(scope='session')
+def data():
+    return np.random.randint(0, 10, size=(100, 100))
 
-def test_yielder_has_fitsio_object(filename):
-    with fitsioyielder.open(filename) as infile:
-        assert hasattr(infile, 'fitsio')
 
-def test_can_get_hdu(filename):
-    with fitsioyielder.open(filename) as infile:
-        assert isinstance(infile['flux'], fitsioyielder.HDU)
+@pytest.fixture
+def hduname():
+    return 'flux'
 
-def test_hdu_has_fitsio_object(filename):
-    with fitsioyielder.open(filename) as infile:
-        assert hasattr(infile['flux'], 'hdu')
 
-def test_hdu_has_chunks_method(filename):
-    with fitsioyielder.open(filename) as infile:
-        assert hasattr(infile['flux'], 'chunks')
+@pytest.yield_fixture
+def hdulist(filename, tmpdir, data, hduname):
+    fname = str(tmpdir.join(filename))
+    with fitsio.FITS(fname, 'rw', clobber=True) as outfile:
+        outfile.write(data, extname=hduname)
+        yield outfile
 
-def test_chunk_size(filename):
-    chunksize = 10
-    with fitsioyielder.open(filename) as infile:
-        for chunk in infile['flux'].chunks(chunksize=chunksize):
-            assert chunk.shape[0] == chunksize
-            break
+@pytest.fixture
+def chunker(hdulist, hduname):
+    hdu = hdulist[hduname]
+    return fitsioyielder.ChunkedAdapter(hdu)
+
+
+def test_chunk_size(chunker):
+    next_chunk = next(chunker(chunksize=10))
+    assert next_chunk.shape[0] == 10
+
+
 
 '''
 Expected API
 
-with fitsioyielder.open(filename) as infile:
-    for chunk in infile['flux'].chunks(chunksize=10):
+with fitsio.FITS(filename) as infile:
+    hdu = infile['flux']
+    chunker = fitsioyielder.ChunkedAdapter(hdu)
+    for chunk in chunker(chunksize=10): # or chunker(memory_limit=2048)
         # do something with chunk
 '''
