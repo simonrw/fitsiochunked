@@ -52,9 +52,14 @@ def test_data_type(chunker):
     assert chunker.data_type == 32
 
 
+def test_chunk_value_object(chunker):
+    next_chunk = next(chunker(chunksize=10))
+    assert hasattr(next_chunk, 'data') and hasattr(next_chunk, 'slice')
+
+
 def test_chunk_size(chunker):
-    next_chunk, _ = next(chunker(chunksize=10))
-    assert next_chunk.shape[0] == 10
+    next_chunk = next(chunker(chunksize=10))
+    assert next_chunk.data.shape[0] == 10
 
 
 @pytest.mark.parametrize('chunksize,nchunks', [
@@ -75,14 +80,14 @@ def test_number_of_chunks(chunker, chunksize, nchunks):
 def test_chunk_contents(chunker, data, chunksize):
     chunks = list(chunker(chunksize=chunksize))
     for i in range(len(chunks)):
-        assert (chunks[i][0] == data[i * chunksize: (i + 1) * chunksize]).all()
+        assert (chunks[i].data == data[i * chunksize: (i + 1) * chunksize]).all()
 
 
 def test_uneven_chunks(chunker):
     chunksize=99
     chunks = list(chunker(chunksize=chunksize))
-    assert chunks[0][0].shape[0] == 99
-    assert chunks[1][0].shape[0] == 1
+    assert chunks[0].data.shape[0] == 99
+    assert chunks[1].data.shape[0] == 1
 
 
 @pytest.mark.parametrize('dtype_size, expected', [
@@ -114,8 +119,8 @@ def test_memory_limit(chunker, memory_limit_mb, expected):
 
 def test_chunker_returns_indexes(chunker):
     chunk_size = 50
-    _, s = next(chunker(chunksize=chunk_size))
-    assert s == slice(0, 50, None)
+    chunk = next(chunker(chunksize=chunk_size))
+    assert chunk.slice == slice(0, chunk_size, None)
 
 
 '''

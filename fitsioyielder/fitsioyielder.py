@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
+from collections import namedtuple
 
+
+Chunk = namedtuple('Chunk', ['data', 'slice'])
 
 class ChunkedAdapter(object):
     def __init__(self, hdu):
@@ -31,7 +33,7 @@ class ChunkedAdapter(object):
         end = start + chunksize
         while end <= self.nrows:
             chunk = self.hdu[start:end, :]
-            yield chunk, slice(start, end)
+            yield Chunk(data=chunk, slice=slice(start, end))
 
             start += chunksize
             end = min(end + chunksize, self.nrows)
