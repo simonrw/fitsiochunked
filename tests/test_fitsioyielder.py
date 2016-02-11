@@ -53,7 +53,7 @@ def test_data_type(chunker):
 
 
 def test_chunk_size(chunker):
-    next_chunk = next(chunker(chunksize=10))
+    next_chunk, _ = next(chunker(chunksize=10))
     assert next_chunk.shape[0] == 10
 
 
@@ -75,14 +75,14 @@ def test_number_of_chunks(chunker, chunksize, nchunks):
 def test_chunk_contents(chunker, data, chunksize):
     chunks = list(chunker(chunksize=chunksize))
     for i in range(len(chunks)):
-        assert (chunks[i] == data[i * chunksize: (i + 1) * chunksize]).all()
+        assert (chunks[i][0] == data[i * chunksize: (i + 1) * chunksize]).all()
 
 
 def test_uneven_chunks(chunker):
     chunksize=99
     chunks = list(chunker(chunksize=chunksize))
-    assert chunks[0].shape[0] == 99
-    assert chunks[1].shape[0] == 1
+    assert chunks[0][0].shape[0] == 99
+    assert chunks[1][0].shape[0] == 1
 
 
 @pytest.mark.parametrize('dtype_size, expected', [
@@ -110,6 +110,12 @@ def test_error_with_no_chunksize_or_memory_limit(chunker):
 ])
 def test_memory_limit(chunker, memory_limit_mb, expected):
     assert chunker._max_num_lightcurves(memory_limit_mb) == expected
+
+
+def test_chunker_returns_indexes(chunker):
+    chunk_size = 50
+    _, s = next(chunker(chunksize=chunk_size))
+    assert s == slice(0, 50, None)
 
 
 '''

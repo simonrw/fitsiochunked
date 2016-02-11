@@ -31,7 +31,7 @@ class ChunkedAdapter(object):
         end = start + chunksize
         while end <= self.nrows:
             chunk = self.hdu[start:end, :]
-            yield chunk
+            yield chunk, slice(start, end)
 
             start += chunksize
             end = min(end + chunksize, self.nrows)
