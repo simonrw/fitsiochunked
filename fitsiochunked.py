@@ -29,8 +29,11 @@ class ChunkedAdapter(object):
         if chunksize is None and memory_limit_mb is None:
             raise ValueError('You must supply either chunksize or memory_limit_mb arguments')
 
+        if chunksize is None:
+            chunksize = self._memory_to_lightcurves(memory_limit_mb)
+
         start = 0
-        end = start + chunksize
+        end = min(start + chunksize, self.nrows)
         while end <= self.nrows:
             chunk = self.hdu[start:end, :]
             yield Chunk(data=chunk, slice=slice(start, end))
