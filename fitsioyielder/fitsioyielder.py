@@ -14,4 +14,8 @@ class Yielder(object):
         return HDU()
 
 class HDU(object):
-    pass
+    def __init__(self):
+        self.hdu = None
+
+    def chunks(self, chunksize):
+        pass

@@ -27,6 +27,13 @@ def test_can_get_hdu(filename):
     with fitsioyielder.open(filename) as infile:
         assert isinstance(infile['flux'], fitsioyielder.HDU)
 
+def test_hdu_has_fitsio_object(filename):
+    with fitsioyielder.open(filename) as infile:
+        assert hasattr(infile['flux'], 'hdu')
+
+def test_hdu_has_chunks_method(filename):
+    with fitsioyielder.open(filename) as infile:
+        assert hasattr(infile['flux'], 'chunks')
 
 '''
 Expected API
