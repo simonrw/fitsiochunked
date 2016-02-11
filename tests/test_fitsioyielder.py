@@ -35,6 +35,13 @@ def test_hdu_has_chunks_method(filename):
     with fitsioyielder.open(filename) as infile:
         assert hasattr(infile['flux'], 'chunks')
 
+def test_chunk_size(filename):
+    chunksize = 10
+    with fitsioyielder.open(filename) as infile:
+        for chunk in infile['flux'].chunks(chunksize=chunksize):
+            assert chunk.shape[0] == chunksize
+            break
+
 '''
 Expected API
 

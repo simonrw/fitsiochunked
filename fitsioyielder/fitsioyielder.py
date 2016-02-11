@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from contextlib import contextmanager
+import numpy as np
 
 @contextmanager
 def open(filename):
@@ -18,4 +19,4 @@ class HDU(object):
         self.hdu = None
 
     def chunks(self, chunksize):
-        pass
+        yield np.zeros((chunksize, 1))
