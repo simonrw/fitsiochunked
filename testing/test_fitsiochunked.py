@@ -120,6 +120,12 @@ def test_memory_limit(chunker, memory_limit_mb, expected):
     assert chunker._max_num_lightcurves(memory_limit_mb) == expected
 
 
+def test_memory_to_lightcurves(chunker, data):
+    memory = 2048
+    expected = int((memory * 1024 * 1024 / 4) / data.shape[1])
+    assert chunker._memory_to_lightcurves(memory) == expected
+
+
 def test_chunker_returns_indexes(chunker):
     chunk_size = 50
     chunk = next(chunker(chunksize=chunk_size))

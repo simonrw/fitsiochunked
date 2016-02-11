@@ -40,6 +40,10 @@ class ChunkedAdapter(object):
             if start >= end:
                 break
 
+    def _memory_to_lightcurves(self, memory_mb):
+        memory_bytes = memory_mb * 1024 * 1024
+        return memory_bytes // self.lc_bytes
+
     def _byte_size(self, data_type):
         return {
             32: 4,
