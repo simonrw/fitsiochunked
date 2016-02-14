@@ -11,7 +11,7 @@ Tests for `fitsiochunked` module.
 import pytest
 import fitsio
 import numpy as np
-import fitsiochunked
+from .context import fitsiochunked
 
 @pytest.fixture(scope='session')
 def filename():
