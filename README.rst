@@ -21,7 +21,7 @@ The following example shows an example of reading in a large fits
 hdu within a memory limit of 2048MB, assuming light curves are
 stored in rows:
 
-::
+.. code:: python
 
   import numpy as np
   import fitsio
