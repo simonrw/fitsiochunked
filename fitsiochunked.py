@@ -2,6 +2,8 @@
 
 from collections import namedtuple
 
+__all__ = ['ChunkedAdapter']
+
 
 Chunk = namedtuple('Chunk', ['data', 'slice'])
 
