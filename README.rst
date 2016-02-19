@@ -5,14 +5,14 @@ fitsiochunked
 .. image:: https://img.shields.io/travis/mindriot101/fitsiochunked.svg
         :target: https://travis-ci.org/mindriot101/fitsiochunked
 
-Package to sequentially efficiently read large fits arrays in object by object
+Package to *sequentially* efficiently read large fits arrays in object by object
 
 * Free software: MIT license
 
 Features
 --------
 
-* Sequentially read in large fits files, within a given fixed memory limit
+* *Sequentially* read in large fits files, within a given fixed memory limit
 
 Quick usage
 -----------
