@@ -47,6 +47,23 @@ stored in rows:
           chunk_mean = np.average(chunk_data, axis=1)
           mean_flux[chunk_slice] = chunk_mean
 
+Installation
+------------
+
+Install with ``pip``:
+
+.. code:: bash
+    pip install git+https://github.com/mindriot101/fitsiochunked
+
+or download and run the setup file:
+
+.. code:: bash
+    git clone https://github.com/mindriot101/fitsiochunked
+    cd fitsiochunked
+    python setup.py install
+
+When this code matures, it will be put up on pip.
+
 Details
 -------
 
