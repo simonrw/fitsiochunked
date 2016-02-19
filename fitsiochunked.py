@@ -2,10 +2,22 @@
 
 from collections import namedtuple
 
-__all__ = ['ChunkedAdapter']
+__all__ = ['ChunkedAdapter', 'chunks']
 
 
 Chunk = namedtuple('Chunk', ['data', 'slice'])
+
+def chunks(hdu, *args, **kwargs):
+    '''
+    High level convenience wrapper for ``ChunkedAdapter``
+
+    This builds a chunked adapter around the given hdu object
+    and then yields the chunks
+    '''
+    chunker = ChunkedAdapter(hdu)
+    for chunk in chunker(*args, **kwargs):
+        yield chunk
+
 
 class ChunkedAdapter(object):
     def __init__(self, hdu):

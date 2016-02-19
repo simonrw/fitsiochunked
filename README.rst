@@ -25,15 +25,14 @@ stored in rows:
 
   import numpy as np
   import fitsio
-  from fitsiochunked import ChunkedAdapter
+  import fitsiochunked as fc
 
   with fitsio.FITS(filename) as infile:
       hdu = infile['flux']
       napertures = hdu.get_info()['ndim'][0]
       mean_flux = np.zeros(napertures)
 
-      chunker = ChunkedAdapter(hdu)
-      for chunk in chunker(memory_limit_mb=2048):
+      for chunk in fc.chunks(hdu, memory_limit_mb=2048):
 
           # `chunk` is a namedtuple with `.data` and `.slice` properties
           chunk_data = chunk.data
@@ -51,12 +50,14 @@ stored in rows:
 Details
 -------
 
-The main class created is the ``ChunkedAdapter`` adapter, which wraps
-a ``fitsio`` HDU object. When constructed, it becomes a callable which
-yields the image data in that hdu in chunks.
+The high level interface is the ``chunks`` function, which builds a
+``ChunkedAdapter`` object wrapping a ``fitsio.ImageHDU`` object.
 
-The chunksize can be set either with with the parameter ``chunksize``
-which simply yields ``chunksize`` rows each time, or with
-``memory_limit_mb`` which *tries* (no promises!) to automatically
-calculate the number of lightcurves that will fit into ``memory_limit_mb``
-megabytes of memory.
+The ``ChunkedAdapter`` wraps a ``fitsio`` HDU object. When constructed,
+it becomes a callable which yields the image data in that hdu in chunks.
+
+The chunksize can be set either with with the parameter
+``chunksize`` which simply yields ``chunksize`` rows each time,
+or with ``memory_limit_mb`` which *tries* (no promises!) to
+automatically calculate the number of lightcurves that will fit into
+``memory_limit_mb`` megabytes of memory.

@@ -132,11 +132,20 @@ def test_chunker_returns_indexes(chunker):
     assert chunk.slice == slice(0, chunk_size, None)
 
 
+def test_convenience_function(hdulist, data):
+    hdu = hdulist[0]
+    chunk = next(fitsiochunked.chunks(hdu, chunksize=10))
+    assert chunk.data.shape == (10, data.shape[1])
+
 '''
 Expected API
 
 with fitsio.FITS(filename) as infile:
     hdu = infile['flux']
+    for chunk in fitsiochunked.chunks(hdu, chunksize=10):
+        # do something with chunk
+
+    # or the low level api
     chunker = fitsiochunked.ChunkedAdapter(hdu)
     for chunk in chunker(chunksize=10): # or chunker(memory_limit=2048)
         # do something with chunk
