@@ -53,11 +53,13 @@ Installation
 Install with ``pip``:
 
 .. code:: bash
+
     pip install git+https://github.com/mindriot101/fitsiochunked
 
 or download and run the setup file:
 
 .. code:: bash
+
     git clone https://github.com/mindriot101/fitsiochunked
     cd fitsiochunked
     python setup.py install
