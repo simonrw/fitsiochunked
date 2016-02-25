@@ -54,6 +54,8 @@ Install with ``pip``:
 
 .. code:: bash
 
+    pip install fitsiochunked
+    # or get the latest development version from github
     pip install git+https://github.com/mindriot101/fitsiochunked
 
 or download and run the setup file:
