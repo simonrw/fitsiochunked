@@ -66,8 +66,6 @@ or download and run the setup file:
     cd fitsiochunked
     python setup.py install
 
-When this code matures, it will be put up on pip.
-
 Details
 -------
 
