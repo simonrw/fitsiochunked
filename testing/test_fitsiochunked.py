@@ -140,15 +140,15 @@ def test_convenience_function(hdulist, data):
 
 def test_multiple_hdus(tmpdir, filename):
     shape = (100, 10)
-    hjd = np.random.randint(50, 100, size=shape)
-    flux = np.random.randint(50, 100, size=shape)
-    fluxerr = np.random.randint(50, 100, size=shape)
+    hjd_data = np.random.randint(50, 100, size=shape)
+    flux_data = np.random.randint(50, 100, size=shape)
+    fluxerr_data = np.random.randint(50, 100, size=shape)
 
     fname = str(tmpdir.join(filename))
     with fitsio.FITS(fname, 'rw', clobber=True) as outfile:
-        outfile.write(hjd, extname='hjd')
-        outfile.write(flux, extname='flux')
-        outfile.write(fluxerr, extname='fluxerr')
+        outfile.write(hjd_data, extname='hjd')
+        outfile.write(flux_data, extname='flux')
+        outfile.write(fluxerr_data, extname='fluxerr')
 
     with fitsio.FITS(fname) as infile:
         hjd = infile['hjd']
@@ -159,6 +159,10 @@ def test_multiple_hdus(tmpdir, filename):
         for chunk in fitsiochunked.chunks(hjd, flux, fluxerr, chunksize=10):
             hjd, flux, fluxerr = chunk
             assert hjd.data.shape == flux.data.shape == fluxerr.data.shape == (10, shape[1])
+            assert (hjd.data == hjd_data[hjd.slice]).all()
+            assert (flux.data == flux_data[flux.slice]).all()
+            assert (fluxerr.data == fluxerr_data[fluxerr.slice]).all()
+
             counter += 1
 
     assert counter == 10
