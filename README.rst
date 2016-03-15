@@ -74,6 +74,10 @@ The library copes with an aribtrary number of hdus:
 
           # and so on
 
+Note: if multiple hdus are supplied, then the ``memory_limit_mb`` and
+``chunksize`` arguments to ``chunks`` apply to **each** HDU i.e. three HDUs and
+a memory limit of 2048MB will lead to 3x2048 = 6144MB of memory used.
+
 Installation
 ------------
 
