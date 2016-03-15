@@ -7,16 +7,19 @@ __all__ = ['ChunkedAdapter', 'chunks']
 
 Chunk = namedtuple('Chunk', ['data', 'slice'])
 
-def chunks(hdu, *args, **kwargs):
+def chunks(*hdus, **kwargs):
     '''
     High level convenience wrapper for ``ChunkedAdapter``
 
     This builds a chunked adapter around the given hdu object
     and then yields the chunks
     '''
-    chunker = ChunkedAdapter(hdu)
-    for chunk in chunker(*args, **kwargs):
-        yield chunk
+    yielders = [ChunkedAdapter(hdu)(**kwargs) for hdu in hdus]
+    for every in zip(*yielders):
+        if len(every) == 1:
+            yield every[0]
+        else:
+            yield every
 
 
 class ChunkedAdapter(object):

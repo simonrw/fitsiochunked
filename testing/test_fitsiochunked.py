@@ -137,6 +137,32 @@ def test_convenience_function(hdulist, data):
     chunk = next(fitsiochunked.chunks(hdu, chunksize=10))
     assert chunk.data.shape == (10, data.shape[1])
 
+
+def test_multiple_hdus(tmpdir, filename):
+    shape = (100, 10)
+    hjd = np.random.randint(50, 100, size=shape)
+    flux = np.random.randint(50, 100, size=shape)
+    fluxerr = np.random.randint(50, 100, size=shape)
+
+    fname = str(tmpdir.join(filename))
+    with fitsio.FITS(fname, 'rw', clobber=True) as outfile:
+        outfile.write(hjd, extname='hjd')
+        outfile.write(flux, extname='flux')
+        outfile.write(fluxerr, extname='fluxerr')
+
+    with fitsio.FITS(fname) as infile:
+        hjd = infile['hjd']
+        flux = infile['flux']
+        fluxerr = infile['fluxerr']
+
+        counter = 0
+        for chunk in fitsiochunked.chunks(hjd, flux, fluxerr, chunksize=10):
+            hjd, flux, fluxerr = chunk
+            assert hjd.data.shape == flux.data.shape == fluxerr.data.shape == (10, shape[1])
+            counter += 1
+
+    assert counter == 10
+
 '''
 Expected API
 
@@ -149,4 +175,14 @@ with fitsio.FITS(filename) as infile:
     chunker = fitsiochunked.ChunkedAdapter(hdu)
     for chunk in chunker(chunksize=10): # or chunker(memory_limit=2048)
         # do something with chunk
+
+# Multiple HDUs simultaneously
+
+with fitsio.FITS(filename) as infile:
+    hjd = infile['hjd']
+    flux = infile['flux']
+    fluxerr = infile['fluxerr']
+
+    for every in fitsiochunked.chunks(hjd, flux, fluxerr, chunksize=10):
+        # every.hjd.data, every.flux.data, every.fluxerr.data
 '''

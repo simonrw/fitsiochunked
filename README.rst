@@ -47,6 +47,33 @@ stored in rows:
           chunk_mean = np.average(chunk_data, axis=1)
           mean_flux[chunk_slice] = chunk_mean
 
+The library copes with an aribtrary number of hdus:
+
+.. code:: python
+
+  import numpy as np
+  import fitsio
+  import fitsiochunked as fc
+
+  with fitsio.FITS(filename) as infile:
+      hjd_hdu = infile['hjd']
+      flux_hdu = infile['flux']
+      fluxerr_hdu = infile['fluxerr']
+
+      napertures = flux_hdu.get_info()['ndim'][0]
+      mean_flux = np.zeros(napertures)
+
+      for chunks in fc.chunks(hjd_hdu, flux_hdu, fluxerr_hdu, memory_limit_mb=2048):
+          # chunks is a tuple of chunks
+          hjd_chunk, flux_chunk, fluxerr_chunk = chunks
+
+          # `chunk` is a namedtuple with `.data` and `.slice` properties
+          flux_chunk_data = flux_chunk.data
+          print('Data shape:', flux_chunk_data.shape)
+          print('Data dtype:', flux_chunk_data.dtype)
+
+          # and so on
+
 Installation
 ------------
 
