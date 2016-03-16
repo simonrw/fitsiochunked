@@ -22,7 +22,7 @@ test_requirements = [
 
 setup(
     name='fitsiochunked',
-    version='0.0.4',
+    version='0.0.5',
     description="Package to efficiently read large fits arrays in object by object",
     long_description=readme,
     author="Simon Walker",
