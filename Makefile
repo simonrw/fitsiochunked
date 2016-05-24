@@ -5,6 +5,7 @@ help:
 	@echo "- test"
 	@echo "- init"
 	@echo "- coverage"
+	@echo "- package"
 	@echo ""
 
 
@@ -17,3 +18,6 @@ init:
 
 coverage:
 	py.test --cov fitsiochunked.py --cov-report html testing
+
+package:
+	python setup.py sdist bdist_wheel
