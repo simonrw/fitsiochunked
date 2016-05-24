@@ -14,10 +14,10 @@ python:
 
 install:
     - pip install numpy fitsio pytest
-    - pip install coverage
+    - pip install pytest-cov
     - pip install -e .
 
-script: py.test testing
+script: py.test testing --cov fitsiochunked.py
 
 after_success:
     # Upload coverage to codecov.io
