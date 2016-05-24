@@ -4,6 +4,8 @@ fitsiochunked
 
 .. image:: https://img.shields.io/travis/mindriot101/fitsiochunked.svg
         :target: https://travis-ci.org/mindriot101/fitsiochunked
+.. image:: https://codecov.io/gh/mindriot101/fitsiochunked/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/mindriot101/fitsiochunked
 
 Package to *sequentially* efficiently read large fits arrays in object by object
 
