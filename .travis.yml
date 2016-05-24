@@ -16,4 +16,6 @@ install:
 
 script: py.test testing
 
-
+after_success:
+    # Upload coverage to codecov.io
+      - bash <(curl -s https://codecov.io/bash)
