@@ -7,6 +7,7 @@ __all__ = ['ChunkedAdapter', 'chunks']
 
 Chunk = namedtuple('Chunk', ['data', 'slice'])
 
+
 def chunks(*hdus, **kwargs):
     '''
     High level convenience wrapper for ``ChunkedAdapter``
@@ -44,7 +45,9 @@ class ChunkedAdapter(object):
 
     def __call__(self, chunksize=None, memory_limit_mb=None):
         if chunksize is None and memory_limit_mb is None:
-            raise ValueError('You must supply either chunksize or memory_limit_mb arguments')
+            raise ValueError(
+                'You must supply either chunksize or memory_limit_mb arguments'
+            )
 
         if chunksize is None:
             chunksize = self._memory_to_lightcurves(memory_limit_mb)
@@ -76,4 +79,3 @@ class ChunkedAdapter(object):
     def _max_num_lightcurves(self, memory_limit_mb):
         memory_limit_bytes = memory_limit_mb * 1024 * 1024
         return memory_limit_bytes / self._byte_size(self.data_type)
-

@@ -13,9 +13,11 @@ import fitsio
 import numpy as np
 from .context import fitsiochunked
 
+
 @pytest.fixture(scope='session')
 def filename():
     return 'test.fits'
+
 
 @pytest.fixture(scope='session')
 def data():
@@ -33,6 +35,7 @@ def hdulist(filename, tmpdir, data, hduname):
     with fitsio.FITS(fname, 'rw', clobber=True) as outfile:
         outfile.write(data, extname=hduname)
         yield outfile
+
 
 @pytest.fixture
 def chunker(hdulist, hduname):
@@ -84,7 +87,7 @@ def test_chunk_contents(chunker, data, chunksize):
 
 
 def test_uneven_chunks(chunker):
-    chunksize=99
+    chunksize = 99
     chunks = list(chunker(chunksize=chunksize))
     assert chunks[0].data.shape[0] == 99
     assert chunks[1].data.shape[0] == 1
@@ -105,12 +108,14 @@ def test_get_lc_size(chunker, data):
 
 def test_error_with_no_chunksize_or_memory_limit(chunker):
     with pytest.raises(ValueError) as err:
-        _ = list(chunker())
+        list(chunker())
     assert 'supply either chunksize or memory_limit' in str(err)
+
 
 def test_no_error_with_either_argument(chunker):
     assert list(chunker(memory_limit_mb=1024))
     assert list(chunker(chunksize=10))
+
 
 @pytest.mark.parametrize('memory_limit_mb, expected', [
     (2, 524288),
@@ -158,7 +163,9 @@ def test_multiple_hdus(tmpdir, filename):
         counter = 0
         for chunk in fitsiochunked.chunks(hjd, flux, fluxerr, chunksize=10):
             hjd, flux, fluxerr = chunk
-            assert hjd.data.shape == flux.data.shape == fluxerr.data.shape == (10, shape[1])
+            assert hjd.data.shape == flux.data.shape == fluxerr.data.shape == (
+                10, shape[1]
+            )
             assert (hjd.data == hjd_data[hjd.slice]).all()
             assert (flux.data == flux_data[flux.slice]).all()
             assert (fluxerr.data == fluxerr_data[fluxerr.slice]).all()
