@@ -15,7 +15,20 @@ def chunks(*hdus, **kwargs):
     This builds a chunked adapter around the given hdu object
     and then yields the chunks
     '''
-    yielders = [ChunkedAdapter(hdu)(**kwargs) for hdu in hdus]
+    adapters = [ChunkedAdapter(hdu) for hdu in hdus]
+
+    # Make sure that each chunk is of equal size
+    chunksizes = []
+    for adapter in adapters:
+        if 'chunksize' in kwargs:
+            chunksizes.append(kwargs['chunksize'])
+        else:
+            memory_limit_mb = kwargs['memory_limit_mb']
+            chunksizes.append(adapter._memory_to_lightcurves(memory_limit_mb))
+    chunksize = min(chunksizes)
+
+    yielders = [adapter(chunksize=chunksize) for adapter in adapters]
+
     for every in zip(*yielders):
         if len(every) == 1:
             yield every[0]

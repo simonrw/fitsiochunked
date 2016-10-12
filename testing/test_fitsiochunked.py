@@ -174,6 +174,26 @@ def test_multiple_hdus(tmpdir, filename):
 
     assert counter == 10
 
+
+def test_multiple_hdus_with_different_sizes(tmpdir, filename):
+    shape = (50, 100000)
+    float_data = np.random.uniform(50, 100, size=shape).astype(np.float64)
+    int_data = np.random.randint(50, 100, size=shape).astype(np.int16)
+
+    fname = str(tmpdir.join(filename))
+    with fitsio.FITS(fname, 'rw', clobber=True) as outfile:
+        outfile.write(float_data, extname='float')
+        outfile.write(int_data, extname='int')
+
+    with fitsio.FITS(fname) as infile:
+        float_data = infile['float']
+        int_data = infile['int']
+
+        for chunks in fitsiochunked.chunks(float_data, int_data, memory_limit_mb=10):
+            float_data, int_data = chunks
+            assert float_data.data.shape == int_data.data.shape
+
+
 '''
 Expected API
 
