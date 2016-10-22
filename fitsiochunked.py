@@ -1,14 +1,22 @@
 # -*- coding: utf-8 -*-
 
 from collections import namedtuple
+try:
+    from typing import List, Iterator, Optional  # NOQA
+except ImportError:
+    pass
 
-__all__ = ['ChunkedAdapter', 'chunks']
+# For typing reasons
+import fitsio  # NOQA
+
+__all__ = ['ChunkedAdapter', 'chunks']  # type: List[str]
 
 
 Chunk = namedtuple('Chunk', ['data', 'slice'])
 
 
 def chunks(*hdus, **kwargs):
+    # type: (*fitsio.HDUBase, **int) -> Iterator[Chunk]
     '''
     High level convenience wrapper for ``ChunkedAdapter``
 
@@ -37,26 +45,33 @@ def chunks(*hdus, **kwargs):
 
 
 class ChunkedAdapter(object):
+
     def __init__(self, hdu):
+        # type: (fitsio.HDUBase) -> None
         self.hdu = hdu
 
     @property
     def nrows(self):
+        # type: () -> int
         return self.hdu.get_info()['dims'][0]
 
     @property
     def num_images(self):
+        # type: () -> int
         return self.hdu.get_info()['dims'][1]
 
     @property
     def data_type(self):
+        # type: () -> int
         return self.hdu.get_info()['img_equiv_type']
 
     @property
     def lc_bytes(self):
+        # type: () -> int
         return self._byte_size(self.data_type) * self.num_images
 
     def __call__(self, chunksize=None, memory_limit_mb=None):
+        # type: (Optional[int], Optional[int]) -> Iterator[Chunk]
         if chunksize is None and memory_limit_mb is None:
             raise ValueError(
                 'You must supply either chunksize or memory_limit_mb arguments'
@@ -77,10 +92,12 @@ class ChunkedAdapter(object):
                 break
 
     def _memory_to_lightcurves(self, memory_mb):
+        # type: (int) -> int
         memory_bytes = memory_mb * 1024 * 1024
         return memory_bytes // self.lc_bytes
 
     def _byte_size(self, data_type):
+        # type: (int) -> int
         return {
             32: 4,
             -32: 4,
@@ -90,5 +107,6 @@ class ChunkedAdapter(object):
         }[data_type]
 
     def _max_num_lightcurves(self, memory_limit_mb):
+        # type: (int) -> int
         memory_limit_bytes = memory_limit_mb * 1024 * 1024
         return memory_limit_bytes / self._byte_size(self.data_type)
