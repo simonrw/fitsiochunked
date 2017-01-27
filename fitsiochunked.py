@@ -104,6 +104,7 @@ class ChunkedAdapter(object):
             -64: 8,
             16: 2,
             20: 2,
+            8: 1,
         }[data_type]
 
     def _max_num_lightcurves(self, memory_limit_mb):
